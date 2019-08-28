@@ -1,42 +1,94 @@
-// import React, { Component } from 'react';
-import React, {useState, useEffect} from 'react';
+import React, { Component } from 'react';
+// import React, {useState, useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { callbackify } from 'util';
-import { async } from 'q';
+// import { callbackify } from 'util';
+// import { async } from 'q';
 
 
-const App= () => {
-  const [state, setState] = useState(null);
-
-  useEffect(() => {
-    callBackendAPI()
-      .then(res => setState(res.express))
-      .catch(err => console.log(err));
-  });
-
-  const callBackendAPI = async () =>{
-    const response = await fetch('/express_backend');
-    const body = await response.json();
-
-    if (response.status !== 200) {
-      throw Error(body.message) 
+class App extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        items: [],
+        isLoaded: false,
+      }
     }
-    return body;
-  };
 
-  return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        // Render the newly fetched data inside of {state}
-        <p className="App-intro">{state}</p>
-      </div>
-  );
+    componentDidMount() {
+
+      fetch('https://jsonplaceholder.typicode.com/users')
+        .then(res => res.json())
+        .then(json => {
+          this.setState({
+            isLoaded: true,
+            items: json,
+          })
+        });
+    }
+
+    render(){
+
+      var { isLoaded, items} = this.state;
+
+      if (!isLoaded) {
+        return <div> Loading...</div>
+      } 
+
+      else{
+        return(
+          <div className="App">
+            <ul>
+              {items.map(item=>(
+                  <li
+                    key={item.id}
+                  >
+                   Name: {item.name} | Email: {item.email}
+                  </li>
+                )
+              )};
+            </ul>
+          </div>
+        );
+      };
+
   
-} 
+    }
+  }
+
+
+// const App= () => {
+//   const [state, setState] = useState();
+
+//   useEffect(() => {
+//     callBackendAPI()
+//       .then(res => setState(res.express))
+//       .catch(err => console.log(err));
+//   });
+
+//   const callBackendAPI = async () =>{
+//     const response = await fetch('/');
+//     const body = await response.json();
+
+//     if (response.status !== 200) {
+//       throw Error(body.message) 
+//     }
+//     return body;
+//   };
+
+//   return (
+//       <div className="App">
+//         <header className="App-header">
+//           <img src={logo} className="App-logo" alt="logo" />
+//                   // Render the newly fetched data inside of {state}
+//         <p className="App-intro" onChange={useEffect}>{state}</p>
+//           <h1 className="App-title">Welcome to React</h1>
+//         </header>
+
+//       </div>
+//   );
+  
+// } 
 
 // class App extends Component {
 // state = {
@@ -59,7 +111,7 @@ const App= () => {
 //     }
 //     return body;
 //   };
-
+                                                                                                                                                                                                                                  
 //   render() {
 //     return (
 //       <div className="App">
